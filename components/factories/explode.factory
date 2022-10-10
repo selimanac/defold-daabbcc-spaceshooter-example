@@ -1,0 +1,2 @@
+prototype: "/components/gameobjects/enemy_explode.go"
+load_dynamically: false

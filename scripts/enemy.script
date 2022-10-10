@@ -1,0 +1,42 @@
+local g = require("scripts.global")
+
+go.property("aabb_id", -1)
+function init(self)
+    self.url = msg.url(".")
+    self.health = 100
+    self.hitpoint = 100
+    self.aabb_id = aabb.insert_gameobject(g.enemy_group_id, self.url, 5, 5)
+    local v = {url = self.url, aabb_id = self.aabb_id, health = self.health}
+    g.enemies[self.aabb_id] = v
+    self.impact = false
+
+end
+
+function final(self)
+    g.enemies[self.aabb_id] = nil
+    aabb.remove_gameobject(g.enemy_group_id, self.aabb_id)
+end
+
+function update(self, dt)
+    if self.impact then
+        return
+    end
+    local result = aabb.query_id(g.enemy_group_id, self.aabb_id)
+    if result then
+        for index, value in ipairs(result) do
+
+            if g.missiles[value] and g.missiles[value].active then
+                g.missiles[value].active = false
+                self.health = self.health - self.hitpoint
+
+                go.delete(g.missiles[value].url)
+
+                if self.health <= 0 then
+                    self.impact = true
+                    go.cancel_animations(self.url, "position")
+                    g.enemy_explode(go.get_position(), self.url)
+                end
+            end
+        end
+    end
+end

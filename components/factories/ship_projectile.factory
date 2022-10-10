@@ -1,0 +1,2 @@
+prototype: "/components/gameobjects/ship_projectile.go"
+load_dynamically: false
