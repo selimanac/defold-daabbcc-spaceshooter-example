@@ -1,12 +1,21 @@
 local g = require("scripts.global")
 go.property("aabb_id", -1)
 
+
+local function delete_projectile(self, url, property)
+    go.delete()
+end
+
+
 function init(self)
     self.url = msg.url(".")
     self.aabb_id = aabb.insert_gameobject(g.enemy_missile_group_id, self.url, 3, 3)
     local v = {url = self.url, aabb_id = self.aabb_id, active = true}
     g.enemy_missiles[self.aabb_id] = v
 
+    local target = go.get_position() + vmath.rotate(go.get_rotation(), g.vector_up * 400)
+
+    go.animate(self.url , "position", go.PLAYBACK_ONCE_FORWARD, target, go.EASING_LINEAR, 8, 0, delete_projectile)
 end
 
 function final(self)

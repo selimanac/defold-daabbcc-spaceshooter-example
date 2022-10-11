@@ -19,18 +19,13 @@ local function take_damage(self)
     end
 end
 
-local function delete_projectile(self, url, property)
-    go.delete(url)
 
-end
 
 local function fire_projectile(self)
     local pos = go.get_position(self.url)
     local rot = go.get_rotation(self.url)
-    local missile = factory.create(g.factories.ENEMY_MISSILE, pos, rot)
-    local target = pos + vmath.rotate(rot, g.vector_up * 400)
-
-    go.animate(missile, "position", go.PLAYBACK_ONCE_FORWARD, target, go.EASING_LINEAR, 8, 0, delete_projectile)
+    factory.create(g.factories.ENEMY_MISSILE, pos, rot)
+   
 end
 
 function init(self)
