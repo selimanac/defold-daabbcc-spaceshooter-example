@@ -1,0 +1,34 @@
+local g = require("scripts.global")
+local function show(self, proxy) -- <5>
+    if self.current_proxy then -- <6>
+        msg.post(self.current_proxy, "unload") -- <7>
+        self.current_proxy = nil
+    end
+    msg.post(proxy, "async_load") -- <8>
+end
+
+function init(self)
+    msg.post(".", "acquire_input_focus") -- <1>
+	g.proxy_url = msg.url(".")
+
+
+    self.current_proxy = nil -- <2>
+    msg.post("#", "game") -- <3>
+end
+
+function on_message(self, message_id, message, sender)
+    if message_id == hash("intro") then -- <4>
+        show(self, "#intro")
+    elseif message_id == hash("game") then
+      
+        show(self, "#game")
+    elseif message_id == hash("the_end") then
+        show(self, "#end")
+    elseif message_id == hash("proxy_loaded") then -- <9>
+        self.current_proxy = sender -- <10>
+        msg.post(sender, "enable") -- <11>
+    elseif message_id == hash("proxy_unloaded") then
+        print("Unloaded", sender)
+        aabb.clear() -- aabb.clear is faster then Unloading proxy. It may cause a harmless error.
+    end
+end

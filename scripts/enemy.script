@@ -1,15 +1,53 @@
 local g = require("scripts.global")
 
 go.property("aabb_id", -1)
+
+local function take_damage(self)
+    if self.impact then
+        return
+    end
+    self.health = self.health - self.hitpoint
+    if self.health <= 0 then
+        self.impact = true
+        go.cancel_animations(self.url, "position")
+        g.enemy_explode(go.get_position(), self.url)
+
+      
+        if rnd.range(1, 10) == 10 then
+            g.dispacth_collectable(go.get_position(self.url))
+        end
+    end
+end
+
+local function delete_projectile(self, url, property)
+    go.delete(url)
+
+end
+
+local function fire_projectile(self)
+    local pos = go.get_position(self.url)
+    local rot = go.get_rotation(self.url)
+    local missile = factory.create(g.factories.ENEMY_MISSILE, pos, rot)
+    local target = pos + vmath.rotate(rot, g.vector_up * 400)
+
+    go.animate(missile, "position", go.PLAYBACK_ONCE_FORWARD, target, go.EASING_LINEAR, 8, 0, delete_projectile)
+end
+
 function init(self)
     self.url = msg.url(".")
     self.health = 100
     self.hitpoint = 100
     self.aabb_id = aabb.insert_gameobject(g.enemy_group_id, self.url, 5, 5)
-    local v = {url = self.url, aabb_id = self.aabb_id, health = self.health}
-    g.enemies[self.aabb_id] = v
     self.impact = false
 
+    self.result = {}
+
+    local v = {url = self.url, aabb_id = self.aabb_id, health = self.health}
+    g.enemies[self.aabb_id] = v
+
+    if rnd.toss() == 1 then
+        timer.delay(2.0, true, fire_projectile)
+    end
 end
 
 function final(self)
@@ -21,22 +59,23 @@ function update(self, dt)
     if self.impact then
         return
     end
-    local result = aabb.query_id(g.enemy_group_id, self.aabb_id)
-    if result then
-        for index, value in ipairs(result) do
 
-            if g.missiles[value] and g.missiles[value].active then
-                g.missiles[value].active = false
-                self.health = self.health - self.hitpoint
+    self.result = aabb.query_id(g.enemy_group_id, self.aabb_id)
 
-                go.delete(g.missiles[value].url)
-
-                if self.health <= 0 then
-                    self.impact = true
-                    go.cancel_animations(self.url, "position")
-                    g.enemy_explode(go.get_position(), self.url)
-                end
+    if self.result then
+        for i = 1, #self.result do
+            if g.missiles[self.result[i]] and g.missiles[self.result[i]].active then
+                g.missiles[self.result[i]].active = false
+                go.delete(g.missiles[self.result[i]].url)
+                take_damage(self)
             end
         end
     end
+end
+
+function on_message(self, message_id, message)
+    if message_id == hash("take_damage") then
+        take_damage(self)
+    end
+
 end

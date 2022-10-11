@@ -1,0 +1,2 @@
+prototype: "/components/gameobjects/shield.go"
+load_dynamically: false

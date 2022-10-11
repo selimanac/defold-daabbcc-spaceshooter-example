@@ -1,0 +1,15 @@
+local g = require("scripts.global")
+go.property("aabb_id", -1)
+
+function init(self)
+    self.url = msg.url(".")
+    self.aabb_id = aabb.insert_gameobject(g.enemy_missile_group_id, self.url, 3, 3)
+    local v = {url = self.url, aabb_id = self.aabb_id, active = true}
+    g.enemy_missiles[self.aabb_id] = v
+
+end
+
+function final(self)
+    g.enemy_missiles[self.aabb_id] = nil
+    aabb.remove_gameobject(g.enemy_missile_group_id, self.aabb_id)
+end

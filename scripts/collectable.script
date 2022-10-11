@@ -1,0 +1,37 @@
+local g = require("scripts.global")
+
+local function collect_complete(self, url, property)
+    go.delete(self.url)
+end
+
+local function collect(self)
+	timer.cancel(self.timer)
+    go.animate(self.url, "scale", go.PLAYBACK_ONCE_PINGPONG, vmath.vector3(2, 2, 0), go.EASING_INOUTCIRC, 0.2, 0, collect_complete)
+end
+
+function init(self)
+    self.url = msg.url(".")
+    self.sprite_url = msg.url(".")
+    self.sprite_url.fragment = "sprite"
+    self.pos = go.get_position(self.url)
+
+    self.aabb_id = aabb.insert(g.collectable_group_id, self.pos.x, self.pos.y, 5, 5)
+
+    local v = {url = self.url, aabb_id = self.aabb_id, active = true}
+    g.collectables[self.aabb_id] = v
+
+    go.animate(self.sprite_url, "tint.w", go.PLAYBACK_ONCE_BACKWARD, 0, go.EASING_LINEAR, 0.5)
+    go.animate(self.url, "scale", go.PLAYBACK_ONCE_PINGPONG, vmath.vector3(2, 2, 0), go.EASING_INOUTBOUNCE, 0.5)
+    self.timer = timer.delay(10, true, collect)
+end
+
+function final(self)
+    g.collectables[self.aabb_id] = nil
+    aabb.remove(g.collectable_group_id, self.aabb_id)
+end
+
+function on_message(self, message_id, message, sender)
+    if message_id == hash("collect") then
+        collect(self)
+    end
+end

@@ -1,22 +1,22 @@
 [bootstrap]
-main_collection = /main/main.collectionc
-render = /lowrezjam/render/lowrez.renderc
+main_collection = /components/collections/container.collectionc
+render = /render/lowrez.renderc
 
 [script]
 shared_state = 1
 
 [display]
-width = 960
-height = 640
+width = 1920
+height = 1080
 
 [android]
 input_method = HiddenInputField
 
 [project]
 title = Space Shooter
-dependencies#0 = https://github.com/selimanac/DAABBCC/archive/refs/heads/v2.1.zip
-dependencies#1 = https://github.com/britzl/lowrezjam-template/archive/master.zip
-dependencies#2 = https://github.com/selimanac/defold-random/archive/master.zip
+dependencies#0 = https://github.com/britzl/lowrezjam-template/archive/master.zip
+dependencies#1 = https://github.com/selimanac/defold-random/archive/master.zip
+dependencies#2 = https://github.com/selimanac/DAABBCC/archive/refs/heads/v2.1.zip
 
 [graphics]
 default_texture_min_filter = nearest
