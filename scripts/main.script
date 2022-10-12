@@ -5,7 +5,6 @@ function init(self)
     msg.post(".", "acquire_input_focus")
     g.init()
     ship.init()
-
 end
 
 function update(self, dt)

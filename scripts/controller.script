@@ -1,4 +1,5 @@
 local g = require("scripts.global")
+
 local function show(self, proxy)
     if self.current_proxy then
         msg.post(self.current_proxy, "unload")
@@ -18,7 +19,6 @@ function on_message(self, message_id, message, sender)
     if message_id == hash("intro") then
         show(self, "#intro")
     elseif message_id == hash("game") then
-
         show(self, "#game")
     elseif message_id == hash("the_end") then
         show(self, "#end")

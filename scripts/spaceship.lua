@@ -169,7 +169,6 @@ local function check_collectable()
 end
 
 local function ship_position(dt)
-
     if input.y > 0 then
         speed = speed + acceleration * dt
         speed = math.min(speed, max_speed)
