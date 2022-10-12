@@ -23,11 +23,14 @@ local ship_missile_hit_result = {}
 local ray_result = {}
 local collectable_result = {}
 
+local is_thruster = false
+
 local function delete_projectile(self, url, property)
     go.delete(url)
 end
 
 local function fire_projectile()
+    g.play_sound("shot", 0.3)
     local missile = factory.create(g.factories.MISSILE, g.spaceship.pos, g.spaceship.rot)
     local target = g.spaceship.pos + vmath.rotate(g.spaceship.rot, missile_move_amount)
     go.animate(missile, "position", go.PLAYBACK_ONCE_FORWARD, target, go.EASING_LINEAR, 3, 0, delete_projectile)
@@ -35,6 +38,8 @@ end
 
 function ship.init()
     msg.post("/laser", "disable")
+    msg.post("/thruster", "disable")
+    
 
     g.spaceship.url = msg.url("/spaceship")
     g.spaceship.sprite = msg.url("/spaceship#ship")
@@ -57,11 +62,29 @@ function ship.init()
     timer.delay(0.12, true, fire_projectile)
 end
 
-local function dispatch_ray()
+local function disable_laser()
+    msg.post("/laser", "disable")
+    g.is_laser_active = false
+    g.stop_sound("huge_laser")
+    g.stop_sound("huge_laser_init")
+
+    timer.delay(2, false, function()
+        g.is_laser_recharge = true
+    end)
+
+end
+
+local function dispatch_ray(action)
     if g.laser_v.x > 0 then
-        g.is_laser_recharge = false
-        msg.post("/laser", "enable")
-        g.is_laser_active = true
+
+        if action then
+            g.is_laser_recharge = false
+            msg.post("/laser", "enable")
+            g.is_laser_active = true
+            g.play_sound("huge_laser")
+            g.play_sound("huge_laser_init")
+        end
+
         ray_end = g.spaceship.pos + vmath.rotate(g.spaceship.rot, g.vector_up * 70)
         ray_result = aabb.raycast(g.enemy_group_id, g.spaceship.pos.x, g.spaceship.pos.y, ray_end.x, ray_end.y)
 
@@ -73,22 +96,17 @@ local function dispatch_ray()
             end
         end
     else
-        msg.post("/laser", "disable")
-        g.is_laser_active = false
+        disable_laser()
     end
 end
 
 function ship.input(action_id, action)
     if action_id == g.move.LASER then
-        dispatch_ray()
+        dispatch_ray(action.pressed)
     end
 
     if action_id == g.move.LASER and action.released then
-        msg.post("/laser", "disable")
-        g.is_laser_active = false
-        timer.delay(2, false, function() 
-            g.is_laser_recharge = true
-        end)
+        disable_laser()
     end
 
     if action_id == g.move.UP then
@@ -114,6 +132,7 @@ local function hit_anim()
         if impact == false then
             msg.post(g.hud_url, "take_damage")
             impact = true
+            g.play_sound("force")
             sprite.play_flipbook("/shield#sprite", "ship_shield", function()
                 impact = false
             end)
@@ -125,7 +144,7 @@ local function hit_anim()
             msg.post(g.hud_url, "take_damage")
             impact = true
             local explode = factory.create(g.factories.EXPLODE, g.spaceship.pos)
-            -- go.set_parent(explode, g.spaceship.url)
+            g.play_sound("hit")
             sprite.play_flipbook(explode, "enemy_impact", function()
                 go.delete(explode)
                 impact = false
@@ -173,6 +192,7 @@ local function check_collectable()
                 g.collectables[collectable_result[i]].active = false
                 msg.post(g.hud_url, "collect")
                 msg.post(g.collectables[collectable_result[i]].url, "collect")
+                g.play_sound("collect")
             end
         end
     end
@@ -192,6 +212,14 @@ local function ship_position(dt)
     go.set_rotation(g.spaceship.rot, g.spaceship.url)
 
     move_amount = g.vector_up * speed * dt
+
+    if speed > 0 and is_thruster == false then
+        is_thruster = true
+        msg.post("/thruster", "enable")
+    elseif speed == 0 then
+        is_thruster = false
+        msg.post("/thruster", "disable")
+    end
 
     g.spaceship.pos = g.spaceship.pos + vmath.rotate(g.spaceship.rot, move_amount)
 

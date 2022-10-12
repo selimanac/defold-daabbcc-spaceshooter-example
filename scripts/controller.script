@@ -12,7 +12,7 @@ function init(self)
     msg.post(".", "acquire_input_focus")
     g.proxy_url = msg.url(".")
     self.current_proxy = nil
-    msg.post("#", "game")
+    msg.post("#", "intro")
 end
 
 function on_message(self, message_id, message, sender)
@@ -26,7 +26,6 @@ function on_message(self, message_id, message, sender)
         self.current_proxy = sender
         msg.post(sender, "enable")
     elseif message_id == hash("proxy_unloaded") then
-        print("Unloaded", sender)
         aabb.clear() -- aabb.clear is faster then Unloading proxy. It may cause a harmless error.
     end
 end

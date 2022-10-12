@@ -12,7 +12,7 @@ local function take_damage(self)
         go.cancel_animations(self.url, "position")
         g.enemy_explode(go.get_position(), self.url)
 
-      
+        g.play_sound("explode")
         if rnd.range(1, 10) == 10 then
             g.dispacth_collectable(go.get_position(self.url))
         end

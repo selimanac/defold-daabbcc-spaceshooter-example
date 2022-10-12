@@ -33,6 +33,8 @@ global.elapsed_time_s = 0
 global.is_laser_active = false
 global.is_laser_recharge = false
 
+global.audio_gate_url = msg.url("main:/audio#audio")
+
 global.factories = {
     ENEMY = msg.url("main:/factories#enemy"),
     EXPLODE = msg.url("main:/factories#explode"),
@@ -111,6 +113,17 @@ end
 
 function global.dispacth_collectable(pos)
     factory.create(global.factories.COLLECTABLE, pos, vmath.quat(0, 0, 0, 0))
+end
+
+function global.play_sound(name, gain)
+    if gain ==nil then
+        gain = 1.0
+    end
+    msg.post(global.audio_gate_url, "play_gated_sound", { soundcomponent = "/audio#"..name, gain = gain })
+end
+
+function global.stop_sound(name)
+    sound.stop("/audio#"..name)
 end
 
 return global
