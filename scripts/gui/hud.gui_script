@@ -3,6 +3,7 @@ local g = require("scripts.global")
 local button
 local shield_progress
 local life_progress
+local laser_progress
 
 local timer_sc
 local timer_mi
@@ -24,12 +25,14 @@ function init(self)
     button = gui.get_node("btn_pause")
     shield_progress = gui.get_node("shield_progress")
     life_progress = gui.get_node("life_progress")
+    laser_progress = gui.get_node("laser_progress")
 
     timer_sc = gui.get_node("timer_sc")
     timer_mi = gui.get_node("timer_mi")
 
     g.shield_v = gui.get_size(shield_progress)
     g.life_v = gui.get_size(life_progress)
+    g.laser_v = gui.get_size(laser_progress)
 
     now = socket.gettime()
 end
@@ -74,9 +77,27 @@ local function printDate(m, s)
     gui.set_text(timer_mi, g.elapsed_time_m)
 end
 
+local function check_laser()
+    if g.is_laser_active then
+
+        if g.laser_v.x > 0 then
+            g.laser_v.x = g.laser_v.x - 1
+        end
+    else
+        if g.laser_v.x < 150 and  g.is_laser_recharge == true then
+            g.laser_v.x = g.laser_v.x + 0.5
+        end
+    end
+
+    gui.set_size(laser_progress, g.laser_v)
+end
+
 function update(self, dt)
     elapsed = socket.gettime() - now
     printDate(getDate1(elapsed))
+
+    check_laser()
+
 end
 
 function on_message(self, message_id, message, sender)

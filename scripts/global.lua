@@ -5,6 +5,8 @@ global.hud_url = ""
 
 global.shield_v = 0
 global.life_v = 0
+global.laser_v = 0
+
 
 global.screen_width = 480
 global.screen_height = 270
@@ -27,6 +29,9 @@ global.isPaused = false
 
 global.elapsed_time_m = 0
 global.elapsed_time_s = 0
+
+global.is_laser_active = false
+global.is_laser_recharge = false
 
 global.factories = {
     ENEMY = msg.url("main:/factories#enemy"),

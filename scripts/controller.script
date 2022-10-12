@@ -12,7 +12,7 @@ function init(self)
     msg.post(".", "acquire_input_focus")
     g.proxy_url = msg.url(".")
     self.current_proxy = nil
-    msg.post("#", "intro")
+    msg.post("#", "game")
 end
 
 function on_message(self, message_id, message, sender)

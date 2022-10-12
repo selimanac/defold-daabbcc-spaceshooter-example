@@ -58,17 +58,23 @@ function ship.init()
 end
 
 local function dispatch_ray()
-    msg.post("/laser", "enable")
+    if g.laser_v.x > 0 then
+        g.is_laser_recharge = false
+        msg.post("/laser", "enable")
+        g.is_laser_active = true
+        ray_end = g.spaceship.pos + vmath.rotate(g.spaceship.rot, g.vector_up * 70)
+        ray_result = aabb.raycast(g.enemy_group_id, g.spaceship.pos.x, g.spaceship.pos.y, ray_end.x, ray_end.y)
 
-    ray_end = g.spaceship.pos + vmath.rotate(g.spaceship.rot, g.vector_up * 70)
-    ray_result = aabb.raycast(g.enemy_group_id, g.spaceship.pos.x, g.spaceship.pos.y, ray_end.x, ray_end.y)
-
-    if ray_result then
-        for i = 1, #ray_result do
-            if g.enemies[ray_result[i]] then
-                msg.post(g.enemies[ray_result[i]].url, "take_damage")
+        if ray_result then
+            for i = 1, #ray_result do
+                if g.enemies[ray_result[i]] then
+                    msg.post(g.enemies[ray_result[i]].url, "take_damage")
+                end
             end
         end
+    else
+        msg.post("/laser", "disable")
+        g.is_laser_active = false
     end
 end
 
@@ -79,6 +85,10 @@ function ship.input(action_id, action)
 
     if action_id == g.move.LASER and action.released then
         msg.post("/laser", "disable")
+        g.is_laser_active = false
+        timer.delay(2, false, function() 
+            g.is_laser_recharge = true
+        end)
     end
 
     if action_id == g.move.UP then
@@ -198,7 +208,7 @@ local function ship_position(dt)
     end
 
     go.set_position(g.spaceship.pos, g.spaceship.url)
-    go.set_position(vmath.vector3(-1*(g.spaceship.pos.x/10),-1*(g.spaceship.pos.y/10), 0), "/back")
+    go.set_position(vmath.vector3(-1 * (g.spaceship.pos.x / 10), -1 * (g.spaceship.pos.y / 10), 0), "/back")
 
     input = vmath.vector3()
 end
