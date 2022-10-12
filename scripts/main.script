@@ -1,20 +1,11 @@
 local g = require("scripts.global")
 local ship = require("scripts.spaceship")
 
--- function callback()
---     msg.post(g.proxy_url, "the_end")
--- end
-
 function init(self)
     msg.post(".", "acquire_input_focus")
     g.init()
     ship.init()
 
-   -- timer.delay(5, false, callback)
-end
-
-function final(self)
-  --  aabb.clear()
 end
 
 function update(self, dt)
@@ -28,6 +19,7 @@ function on_input(self, action_id, action)
     if g.isPaused then
         return
     end
+    
     ship.input(action_id, action)
 
     if action_id == hash("toggle_debug") and action.pressed then

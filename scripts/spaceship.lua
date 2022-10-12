@@ -26,15 +26,16 @@ local collectable_result = {}
 local function delete_projectile(self, url, property)
     go.delete(url)
 end
+
 local function fire_projectile()
     local missile = factory.create(g.factories.MISSILE, g.spaceship.pos, g.spaceship.rot)
     local target = g.spaceship.pos + vmath.rotate(g.spaceship.rot, missile_move_amount)
-
     go.animate(missile, "position", go.PLAYBACK_ONCE_FORWARD, target, go.EASING_LINEAR, 3, 0, delete_projectile)
 end
 
 function ship.init()
     msg.post("/laser", "disable")
+
     g.spaceship.url = msg.url("/spaceship")
     g.spaceship.sprite = msg.url("/spaceship#ship")
 
@@ -57,10 +58,9 @@ function ship.init()
 end
 
 local function dispatch_ray()
-    -- go.set("/laser#sprite", "size.y", 20)
     msg.post("/laser", "enable")
-    ray_end = g.spaceship.pos + vmath.rotate(g.spaceship.rot, g.vector_up * 70)
 
+    ray_end = g.spaceship.pos + vmath.rotate(g.spaceship.rot, g.vector_up * 70)
     ray_result = aabb.raycast(g.enemy_group_id, g.spaceship.pos.x, g.spaceship.pos.y, ray_end.x, ray_end.y)
 
     if ray_result then
@@ -129,7 +129,6 @@ local function hit_anim()
 end
 
 local function check_enemy_missile_hit()
-
     ship_missile_hit_result = aabb.query_id(g.enemy_missile_group_id, g.spaceship.enemy_missile_aabb_id)
 
     if ship_missile_hit_result then
@@ -143,7 +142,6 @@ local function check_enemy_missile_hit()
 end
 
 local function check_enemy_hit()
-
     ship_hit_result = aabb.query_id(g.enemy_group_id, g.spaceship.enemy_aabb_id)
 
     if ship_hit_result then
@@ -201,21 +199,16 @@ local function ship_position(dt)
     end
 
     go.set_position(g.spaceship.pos, g.spaceship.url)
-
     go.set_position(vmath.vector3(-1*(g.spaceship.pos.x/10),-1*(g.spaceship.pos.y/10), 0), "/back")
 
     input = vmath.vector3()
 end
 
 function ship.update(dt)
-
     ship_position(dt)
-
     check_enemy_hit()
     check_enemy_missile_hit()
-
     check_collectable()
-
 end
 
 return ship

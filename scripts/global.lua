@@ -8,7 +8,7 @@ global.life_v = 0
 
 global.screen_width = 480
 global.screen_height = 270
-global.spaceship = {url = msg.url(), sprite = msg.url(), thruster = msg.url(), pos = vmath.vector3(), rot = vmath.vector3(), enemy_aabb_id = 0, enemy_missile_aabb_id = 0,collectable_aabb_id = 0}
+global.spaceship = {url = msg.url(), sprite = msg.url(), thruster = msg.url(), pos = vmath.vector3(), rot = vmath.vector3(), enemy_aabb_id = 0, enemy_missile_aabb_id = 0, collectable_aabb_id = 0}
 
 global.vector_up = vmath.vector3(0, 1, 0)
 
@@ -25,8 +25,8 @@ global.collectables = {}
 
 global.isPaused = false
 
-global.elapsed_time_m = 0 
-global.elapsed_time_s = 0 
+global.elapsed_time_m = 0
+global.elapsed_time_s = 0
 
 global.factories = {
     ENEMY = msg.url("main:/factories#enemy"),
@@ -45,8 +45,8 @@ local function remove_enemy(self, url, property)
 end
 
 function global.dispatch_enemy()
-    local p =vmath.vector3()
-    local endpos =vmath.vector3()
+    local p = vmath.vector3()
+    local endpos = vmath.vector3()
 
     if rnd.toss() == 1 then
         if rnd.toss() == 1 then
@@ -105,11 +105,7 @@ function global.pause_game()
 end
 
 function global.dispacth_collectable(pos)
-
-    local collectable = factory.create(global.factories.COLLECTABLE, pos,vmath.quat(0, 0, 0, 0))
- 
-
- 
+    factory.create(global.factories.COLLECTABLE, pos, vmath.quat(0, 0, 0, 0))
 end
 
 return global

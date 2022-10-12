@@ -32,11 +32,9 @@ function init(self)
     g.life_v = gui.get_size(life_progress)
 
     now = socket.gettime()
-
 end
 
 local function take_damage(self)
-
     if g.shield_v.x > 0 then
         g.shield_v.x = g.shield_v.x - shield_hit
         if g.shield_v.x < 0 then
@@ -50,7 +48,6 @@ local function take_damage(self)
             g.life_v.x = 0
         end
         gui.set_size(life_progress, g.life_v)
-
     end
 end
 
@@ -71,7 +68,6 @@ local function getDate1(sec)
 end
 
 local function printDate(m, s)
-    --  local t = string.format("%02d:%02d:%02d", h, m, s)
     g.elapsed_time_m = string_format("%02d", m)
     g.elapsed_time_s = string_format("%02d", s)
     gui.set_text(timer_sc, g.elapsed_time_s)
@@ -79,10 +75,8 @@ local function printDate(m, s)
 end
 
 function update(self, dt)
-
     elapsed = socket.gettime() - now
     printDate(getDate1(elapsed))
-
 end
 
 function on_message(self, message_id, message, sender)

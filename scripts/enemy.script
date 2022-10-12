@@ -19,8 +19,6 @@ local function take_damage(self)
     end
 end
 
-
-
 local function fire_projectile(self)
     local pos = go.get_position(self.url)
     local rot = go.get_rotation(self.url)
