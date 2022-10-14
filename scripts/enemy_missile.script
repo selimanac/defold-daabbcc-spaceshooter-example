@@ -1,11 +1,9 @@
 local g = require("scripts.global")
 go.property("aabb_id", -1)
 
-
 local function delete_projectile(self, url, property)
     go.delete()
 end
-
 
 function init(self)
     self.url = msg.url(".")
@@ -15,7 +13,7 @@ function init(self)
 
     local target = go.get_position() + vmath.rotate(go.get_rotation(), g.vector_up * 400)
 
-    go.animate(self.url , "position", go.PLAYBACK_ONCE_FORWARD, target, go.EASING_LINEAR, 8, 0, delete_projectile)
+    go.animate(self.url, "position", go.PLAYBACK_ONCE_FORWARD, target, go.EASING_LINEAR, 8, 0, delete_projectile)
 end
 
 function final(self)

@@ -7,7 +7,6 @@ global.shield_v = 0
 global.life_v = 0
 global.laser_v = 0
 
-
 global.screen_width = 480
 global.screen_height = 270
 global.spaceship = {url = msg.url(), sprite = msg.url(), thruster = msg.url(), pos = vmath.vector3(), rot = vmath.vector3(), enemy_aabb_id = 0, enemy_missile_aabb_id = 0, collectable_aabb_id = 0}
@@ -108,7 +107,6 @@ function global.pause_game()
         global.isPaused = false
         aabb.run(true)
     end
-
 end
 
 function global.dispacth_collectable(pos)
@@ -116,14 +114,14 @@ function global.dispacth_collectable(pos)
 end
 
 function global.play_sound(name, gain)
-    if gain ==nil then
+    if gain == nil then
         gain = 1.0
     end
-    msg.post(global.audio_gate_url, "play_gated_sound", { soundcomponent = "/audio#"..name, gain = gain })
+    msg.post(global.audio_gate_url, "play_gated_sound", {soundcomponent = "/audio#" .. name, gain = gain})
 end
 
 function global.stop_sound(name)
-    sound.stop("/audio#"..name)
+    sound.stop("/audio#" .. name)
 end
 
 return global

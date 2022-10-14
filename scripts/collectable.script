@@ -5,7 +5,7 @@ local function collect_complete(self, url, property)
 end
 
 local function collect(self)
-	timer.cancel(self.timer)
+    timer.cancel(self.timer)
     go.animate(self.url, "scale", go.PLAYBACK_ONCE_PINGPONG, vmath.vector3(2, 2, 0), go.EASING_INOUTCIRC, 0.2, 0, collect_complete)
 end
 

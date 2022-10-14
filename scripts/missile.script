@@ -2,9 +2,9 @@ local g = require("scripts.global")
 go.property("aabb_id", -1)
 
 function init(self)
-    self.url =  msg.url(".")
-    self.aabb_id = aabb.insert_gameobject(g.enemy_group_id,  self.url, 3, 3)
-    local v = {url =  self.url, aabb_id = self.aabb_id, active = true}
+    self.url = msg.url(".")
+    self.aabb_id = aabb.insert_gameobject(g.enemy_group_id, self.url, 3, 3)
+    local v = {url = self.url, aabb_id = self.aabb_id, active = true}
     g.missiles[self.aabb_id] = v
 
 end

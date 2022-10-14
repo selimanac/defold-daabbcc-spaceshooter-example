@@ -39,7 +39,6 @@ end
 function ship.init()
     msg.post("/laser", "disable")
     msg.post("/thruster", "disable")
-    
 
     g.spaceship.url = msg.url("/spaceship")
     g.spaceship.sprite = msg.url("/spaceship#ship")
